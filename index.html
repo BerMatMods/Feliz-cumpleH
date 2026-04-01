@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>¡Feliz Cumpleaños!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Poppins:wght@300;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: url('https://i.postimg.cc/mDWjDK2y/82d470e05463a977e53eaa835b9851d5.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            touch-action: manipulation;
+        }
+
+        /* Capa oscura y difuminada sobre el fondo */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 0;
+        }
+
+        /* Menú hamburguesa - esquina superior derecha */
+        .menu-toggle {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 200;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 8px;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+
+        .menu-toggle span {
+            width: 22px;
+            height: 2.5px;
+            background: #fff;
+            margin: 3px 0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 8px rgba(255,255,255,0.6);
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        /* Panel del menú desplegable */
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100vh;
+            background: rgba(15, 25, 35, 0.92);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 199;
+            padding: 70px 25px 30px;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -5px 0 25px rgba(0,0,0,0.4);
+        }
+
+        .menu-panel.active {
+            right: 0;
+        }
+
+        .menu-panel h3 {
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            text-align: center;
+            text-shadow: 0 0 15px rgba(255,215,0,0.6);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 14px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .menu-item:hover {
+            background: rgba(255,215,0,0.15);
+            border-color: rgba(255,215,0,0.4);
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(255,215,0,0.2);
+        }
+
+        .menu-item.whatsapp {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            justify-content: center;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .menu-item.whatsapp:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5);
+        }
+
+        .menu-item .icon {
+            margin-right: 12px;
+            font-size: 1.3rem;
+        }
+
+        /* Overlay para cerrar menú */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 198;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Contenedor principal */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            min-height: 80vh;
+        }
+
+        /* Texto de instrucción */
+        .instruction {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 2px 2px 0 #000, 0 0 15px rgba(255,255,255,0.6);
+            margin-bottom: 22px;
+            animation: bounceText 2s infinite;
+            letter-spacing: 0.8px;
+            max-width: 90%;
+            transition: opacity 0.4s ease;
+        }
+
+        .instruction.hidden {
+            opacity: 0;
+            pointer-events: none;
+            height: 0;
+            margin: 0;
+        }
+
+        @keyframes bounceText {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-7px); }
+        }
+
+        /* Imagen de la caja */
+        .gift-box {
+            width: 210px;
+            height: auto;
+            cursor: pointer;
+            z-index: 10;
+            transition: transform 0.3s ease;
+            animation: pulse 2s infinite;
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.6));
+        }
+
+        .gift-box:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.07); }
+        }
+
+        /* Imagen de Happy Birthday - MÁS ARRIBA */
+        .birthday-message {
+            display: none;
+            width: 90%;
+            max-width: 420px;
+            height: auto;
+            z-index: 10;
+            animation: floatBalloon 3.5s ease-in-out infinite;
+            filter: drop-shadow(0 15px 40px rgba(0,0,0,0.5));
+            margin: 0 auto;
+            /* Posicionada mucho más arriba */
+            transform: translateY(-60px);
+        }
+
+        @keyframes floatBalloon {
+            0%, 100% { transform: translateY(-60px) rotate(-1.5deg); }
+            25% { transform: translateY(-85px) rotate(1.5deg); }
+            50% { transform: translateY(-72px) rotate(-0.8deg); }
+            75% { transform: translateY(-92px) rotate(2deg); }
+        }
+
+        /* Texto de felicitación - MÁS ARRIBA */
+        .greeting-text {
+            display: none;
+            text-align: center;
+            z-index: 10;
+            margin-top: -10px; /* Subido más arriba */
+            animation: fadeInUp 1s ease-out forwards;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .greeting-text h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.1rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 3px 3px 0 #000, 0 0 25px rgba(255,215,0,0.9), 0 0 50px rgba(255,215,0,0.6);
+            margin-bottom: 14px;
+            letter-spacing: 1.5px;
+            line-height: 1.2;
+        }
+
+        .greeting-text p {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #fff;
+            text-shadow: 2px 2px 0 #000, 0 0 10px rgba(255,255,255,0.4);
+            line-height: 1.7;
+            padding: 0 10px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Créditos - Georgia, brillante, libre sin cuadros */
+        .credits {
+            position: fixed;
+            bottom: 18px;
+            width: 100%;
+            text-align: center;
+            font-family: 'Georgia', serif;
+            font-size: 0.78rem;
+            font-style: italic;
+            color: #fff;
+            z-index: 100;
+            letter-spacing: 1.8px;
+            padding: 0;
+            background: none;
+            border: none;
+            border-radius: 0;
+            text-shadow: 
+                0 0 10px rgba(255,255,255,1),
+                0 0 20px rgba(255,215,0,0.9),
+                0 0 35px rgba(255,215,0,0.6),
+                0 0 50px rgba(255,255,255,0.4);
+            animation: brilliantGlow 2.5s ease-in-out infinite alternate;
+            opacity: 1;
+            pointer-events: none;
+        }
+
+        @keyframes brilliantGlow {
+            0% { 
+                text-shadow: 
+                    0 0 8px rgba(255,255,255,0.9),
+                    0 0 16px rgba(255,215,0,0.7);
+            }
+            100% { 
+                text-shadow: 
+                    0 0 12px rgba(255,255,255,1),
+                    0 0 25px rgba(255,215,0,1),
+                    0 0 45px rgba(255,215,0,0.8),
+                    0 0 70px rgba(255,255,255,0.6);
+            }
+        }
+
+        /* Partículas brillantes */
+        .sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: radial-gradient(circle, #fff, #FFD700, transparent);
+            border-radius: 50%;
+            animation: sparkleAnim 2.5s ease-in-out infinite;
+            z-index: 5;
+            pointer-events: none;
+            box-shadow: 0 0 8px #FFD700, 0 0 16px #FFD700;
+        }
+
+        @keyframes sparkleAnim {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Confeti */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            z-index: 8;
+            pointer-events: none;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Chispas explosivas - MÁS Y MÁS GRANDES */
+        .spark {
+            position: absolute;
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(to bottom, #fff, #FFD700, #FF6B6B, transparent);
+            border-radius: 2px;
+            z-index: 7;
+            pointer-events: none;
+            animation: sparkFly 1.2s ease-out forwards;
+            box-shadow: 0 0 10px #FFD700;
+        }
+
+        @keyframes sparkFly {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+
+        /* Explosión grande */
+        .explosion {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, #FFD700, #FF6B6B, transparent);
+            border-radius: 50%;
+            z-index: 9;
+            pointer-events: none;
+            animation: explode 0.8s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(0); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.8; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .menu-toggle {
+                top: 12px;
+                right: 12px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .instruction { font-size: 1.1rem; margin-bottom: 18px; }
+            .gift-box { width: 190px; }
+            
+            .birthday-message {
+                width: 92%;
+                max-width: 380px;
+                transform: translateY(-50px);
+            }
+            @keyframes floatBalloon {
+                0%, 100% { transform: translateY(-50px) rotate(-1.5deg); }
+                25% { transform: translateY(-72px) rotate(1.5deg); }
+                50% { transform: translateY(-62px) rotate(-0.8deg); }
+                75% { transform: translateY(-78px) rotate(2deg); }
+            }
+            
+            .greeting-text { margin-top: -5px; }
+            .greeting-text h1 { font-size: 1.85rem; }
+            .greeting-text p { font-size: 1rem; }
+            
+            .credits { font-size: 0.72rem; bottom: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Audio de cumpleaños -->
+    <audio id="birthdayMusic" loop>
+        <source src="https://raw.githubusercontent.com/BerMatMods/Feliz-cumple/main/Cumple.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Partículas brillantes de fondo -->
+    <div class="sparkle" style="top: 15%; left: 12%; animation-delay: 0s;"></div>
+    <div class="sparkle" style="top: 25%; right: 18%; animation-delay: 0.4s;"></div>
+    <div class="sparkle" style="bottom: 35%; left: 22%; animation-delay: 0.8s;"></div>
+    <div class="sparkle" style="top: 55%; right: 12%; animation-delay: 1.2s;"></div>
+    <div class="sparkle" style="bottom: 18%; right: 28%; animation-delay: 1.6s;"></div>
+    <div class="sparkle" style="top: 40%; left: 8%; animation-delay: 2s;"></div>
+
+    <!-- Menú hamburguesa -->
+    <div class="menu-toggle" id="menuToggle" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <!-- Panel del menú -->
+    <div class="menu-panel" id="menuPanel">
+        <h3>✨ Menú</h3>
+        <a href="https://wa.me/51930569195" target="_blank" class="menu-item whatsapp">
+            <span class="icon">💬</span> Contactar Desarrollador
+        </a>
+    </div>
+
+    <!-- Overlay para cerrar menú -->
+    <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+
+    <!-- Contenedor principal -->
+    <div class="container">
+        
+        <!-- Texto de instrucción -->
+        <p class="instruction" id="instructionText">✨ Toca la caja para ver tu sorpresa ✨</p>
+
+        <!-- Caja de regalo -->
+        <img src="https://i.postimg.cc/wvY2vnTF/ff4d30c66a5ebad1145d95e662c99e47_removebg_preview.png" 
+             alt="Caja de regalo" 
+             class="gift-box" 
+             id="giftBox"
+             onclick="openGift()">
+
+        <!-- Mensaje de Happy Birthday -->
+        <img src="https://i.postimg.cc/26NG6g8n/71b58b1ad38c2b7ce97a6a89155f50e2_removebg_preview.png" 
+             alt="Happy Birthday" 
+             class="birthday-message" 
+             id="birthdayMessage">
+
+        <!-- Texto de felicitación -->
+        <div class="greeting-text" id="greetingText">
+            <h1>¡FELIZ CUMPLEAÑOS!</h1>
+            <p>Que este día esté lleno de alegría,<br>
+               felicidad y momentos inolvidables.<br>
+               ¡Disfruta mucho! 🎉</p>
+        </div>
+
+    </div>
+
+    <!-- Créditos con Georgia brillante -->
+    <div class="credits">
+        𖤍𝐁𝐞𝐫𝐌𝐚𝐭-𝐂𝐨𝐝𝐞𖤍
+    </div>
+
+    <script>
+        // Variables globales
+        let musicPlayed = false;
+        const audio = document.getElementById('birthdayMusic');
+        
+        // Función para abrir el regalo
+        function openGift() {
+            const giftBox = document.getElementById('giftBox');
+            const birthdayMessage = document.getElementById('birthdayMessage');
+            const greetingText = document.getElementById('greetingText');
+            const instruction = document.getElementById('instructionText');
+            
+            if (giftBox.style.display === 'none') return;
+            
+            // Reproducir música al tocar la caja
+            if (!musicPlayed) {
+                audio.volume = 0.7;
+                audio.play().catch(e => console.log('Reproducción automática bloqueada:', e));
+                musicPlayed = true;
+            }
+            
+            // Ocultar texto de instrucción
+            instruction.classList.add('hidden');
+            
+            // Explosiones masivas
+            createBigExplosion(window.innerWidth/2, window.innerHeight/2);
+            createSparks(window.innerWidth/2, window.innerHeight/2, 45);
+            
+            // Animación de la caja
+            giftBox.style.transition = 'all 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55)';
+            giftBox.style.transform = 'scale(0) rotate(180deg)';
+            giftBox.style.opacity = '0';
+            
+            // Confeti y serpentina
+            createConfetti();
+            createSerpentine();
+            
+            setTimeout(() => {
+                giftBox.style.display = 'none';
+                birthdayMessage.style.display = 'block';
+                
+                setTimeout(() => {
+                    greetingText.style.display = 'block';
+                    // Confeti continuo
+                    setInterval(createConfetti, 700);
+                    // Explosiones periódicas
+                    setInterval(() => {
+                        createBigExplosion(
+                            Math.random() * window.innerWidth,
+                            Math.random() * window.innerHeight * 0.6
+                        );
+                    }, 1500);
+                }, 400);
+            }, 600);
+        }
+
+        // Toggle del menú
+        function toggleMenu() {
+            const menuToggle = document.getElementById('menuToggle');
+            const menuPanel = document.getElementById('menuPanel');
+            const menuOverlay = document.getElementById('menuOverlay');
+            
+            menuToggle.classList.toggle('active');
+            menuPanel.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+        }
+
+        // Explosión grande con partículas
+        function createBigExplosion(x, y) {
+            // Círculo de explosión
+            for (let i = 0; i < 12; i++) {
+                const explosion = document.createElement('div');
+                explosion.classList.add('explosion');
+                explosion.style.left = x + 'px';
+                explosion.style.top = y + 'px';
+                
+                const angle = (i / 12) * Math.PI * 2;
+                const distance = 40 + Math.random() * 60;
+                explosion.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+                explosion.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+                
+                document.body.appendChild(explosion);
+                setTimeout(() => explosion.remove(), 800);
+            }
+            
+            // Chispas adicionales
+            createSparks(x, y, 35);
+        }
+
+        // Crear chispas
+        function createSparks(x, y, count) {
+            for (let i = 0; i < count; i++) {
+                const spark = document.createElement('div');
+                spark.classList.add('spark');
+                spark.style.left = x + 'px';
+                spark.style.top = y + 'px';
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 80 + Math.random() * 200;
+                spark.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+                spark.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+                
+                document.body.appendChild(spark);
+                setTimeout(() => spark.remove(), 1200);
+            }
+        }
+
+        // Crear confeti
+        function createConfetti() {
+            const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#FF1493', '#00CED1', '#FF69B4'];
+            
+            for (let i = 0; i < 18; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti');
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-20px';
+                    confetti.style.animationDuration = (Math.random() * 3 + 2.5) + 's';
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 5500);
+                }, i * 60);
+            }
+        }
+
+        // Crear serpentina
+        function createSerpentine() {
+            const colors = ['#FF1493', '#00CED1', '#FFD700', '#32CD32', '#FF6347', '#9370DB'];
+            
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    const streamer = document.createElement('div');
+                    streamer.style.position = 'absolute';
+                    streamer.style.width = '4px';
+                    streamer.style.height = '60px';
+                    streamer.style.background = `linear-gradient(180deg, ${colors[i % colors.length]}, transparent)`;
+                    streamer.style.borderRadius = '2px';
+                    streamer.style.left = (5 + i * 9) + 'vw';
+                    streamer.style.top = '-60px';
+                    streamer.style.zIndex = '6';
+                    streamer.style.pointerEvents = 'none';
+                    
+                    streamer.animate([
+                        { transform: 'translateY(0) translateX(0) rotate(0deg)', opacity: 1 },
+                        { transform: `translateY(${window.innerHeight + 100}px) translateX(${(Math.random() - 0.5) * 120}px) rotate(${Math.random() * 1080}deg)`, opacity: 0 }
+                    ], {
+                        duration: (3500 + Math.random() * 2000),
+                        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                    }).onfinish = () => streamer.remove();
+                    
+                    document.body.appendChild(streamer);
+                }, i * 120);
+            }
+        }
+
+        // Permitir reproducción de audio al primer toque en cualquier lugar (fallback)
+        document.addEventListener('touchstart', function() {
+            if (!musicPlayed) {
+                audio.volume = 0.7;
+                audio.play().then(() => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }).catch(() => {});
+            }
+        }, { once: true });
+    </script>
+</body>
+</html>
